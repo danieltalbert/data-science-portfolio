@@ -1,0 +1,41 @@
+{
+  "rows": 22913,
+  "features": 48,
+  "holdout_rows": 4583,
+  "random_state": 42,
+  "excluded_features": [
+    "before1980",
+    "parcel",
+    "yrbuilt"
+  ],
+  "metrics": {
+    "accuracy": 0.9236,
+    "balanced_accuracy": 0.9213,
+    "f1": 0.9384,
+    "roc_auc": 0.9768,
+    "confusion_matrix": [
+      [
+        1568,
+        151
+      ],
+      [
+        199,
+        2665
+      ]
+    ]
+  },
+  "top_features": {
+    "arcstyle_ONE-STORY": 0.105587,
+    "livearea": 0.082404,
+    "stories": 0.082205,
+    "numbaths": 0.067363,
+    "gartype_Att": 0.063347,
+    "tasp": 0.049287,
+    "sprice": 0.048169,
+    "netprice": 0.047492,
+    "quality_C": 0.044842,
+    "abstrprd": 0.042059,
+    "basement": 0.041118,
+    "quality_B": 0.031223
+  }
+}

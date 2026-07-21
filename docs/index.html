@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Daniel Talbert's reproducible property-age classification case study.">
+  <title>Property Age Classification · Daniel Talbert</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav><a href="https://github.com/danieltalbert">Daniel Talbert</a><a href="https://github.com/danieltalbert/data-science-portfolio">Source</a></nav>
+    <div class="hero-copy">
+      <p class="eyebrow">DATA SCIENCE CASE STUDY</p>
+      <h1>Predicting property age without year leakage.</h1>
+      <p class="lede">A deterministic random forest classifies pre-1980 homes from structural, condition, architectural, and transaction attributes—while explicitly excluding the build year.</p>
+      <a class="button" href="https://github.com/danieltalbert/data-science-portfolio/blob/main/analysis/property_age_classifier.qmd">Read the analysis</a>
+    </div>
+  </header>
+  <main>
+    <section aria-labelledby="results-title">
+      <p class="eyebrow">FIXED 20% HOLDOUT · 4,583 ROWS</p>
+      <h2 id="results-title">Strong performance, measured from several angles.</h2>
+      <div class="metrics">
+        <article><strong>92.36%</strong><span>Accuracy</span></article>
+        <article><strong>92.13%</strong><span>Balanced accuracy</span></article>
+        <article><strong>0.9384</strong><span>F1</span></article>
+        <article><strong>0.9768</strong><span>ROC-AUC</span></article>
+      </div>
+    </section>
+    <section class="split" aria-labelledby="method-title">
+      <div>
+        <p class="eyebrow">METHOD</p>
+        <h2 id="method-title">The feature boundary is part of the test suite.</h2>
+        <p>The model never receives <code>yrbuilt</code>, <code>before1980</code>, or the parcel identifier. A stratified split, fixed random seed, pinned dependencies, and generated metrics make the result repeatable.</p>
+      </div>
+      <img src="assets/confusion-matrix.png" alt="Confusion matrix showing 1,568 correct newer-home classifications, 2,665 correct older-home classifications, and 350 total errors.">
+    </section>
+    <section class="split reverse" aria-labelledby="explain-title">
+      <img src="assets/feature-importance.png" alt="Bar chart of the twelve most important random-forest features.">
+      <div>
+        <p class="eyebrow">EXPLAINABILITY</p>
+        <h2 id="explain-title">Architectural and structural signals lead.</h2>
+        <p>One-story architecture, living area, story count, bathroom count, garage type, transaction values, and quality indicators carry substantial model signal. These are model importances—not causal claims.</p>
+      </div>
+    </section>
+    <section class="note" aria-labelledby="limits-title">
+      <p class="eyebrow">LIMITATIONS</p>
+      <h2 id="limits-title">A portfolio result, not a production appraisal.</h2>
+      <p>The data represents one assessment context. External validation, drift monitoring, and clearer source licensing would be required before operational use. The raw CSV remains upstream and is downloaded only when the analysis runs.</p>
+    </section>
+  </main>
+  <footer><span>Daniel Talbert · 2026</span><a href="https://github.com/danieltalbert/data-science-portfolio">Reproduce on GitHub</a></footer>
+</body>
+</html>

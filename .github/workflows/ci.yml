@@ -1,0 +1,62 @@
+name: Data science CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt
+      - run: ruff check .
+      - run: ruff format --check .
+      - run: python -m unittest discover -s tests -v
+      - run: python -m src.property_age_model --output reports-ci
+      - name: Enforce portfolio result and leakage boundary
+        run: |
+          python - <<'PY'
+          import json
+          report = json.load(open("reports-ci/metrics.json", encoding="utf-8"))
+          assert report["metrics"]["accuracy"] >= 0.90
+          assert report["metrics"]["balanced_accuracy"] >= 0.90
+          assert report["excluded_features"] == ["before1980", "parcel", "yrbuilt"]
+          print("RESULT CHECK PASS", report["metrics"])
+          PY
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.event.repository.visibility == 'public'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/configure-pages@v5
+      - name: Assemble site
+        run: |
+          mkdir -p dist/assets
+          cp docs/index.html docs/styles.css dist/
+          cp docs/assets/social-preview.png dist/assets/
+          cp reports/figures/*.png reports/figures/metrics.json dist/assets/
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

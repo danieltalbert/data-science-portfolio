@@ -1,0 +1,76 @@
+---
+title: "Predicting Pre-1980 Homes Without Year Leakage"
+subtitle: "A reproducible classification case study"
+author: "Daniel Talbert"
+format:
+  html:
+    toc: true
+    code-fold: true
+    code-tools: true
+execute:
+  warning: false
+---
+
+## Executive summary
+
+This case study predicts whether a residential property was built before 1980 from structural, condition, quality, garage, architectural, and transaction attributes. The model deliberately excludes `yrbuilt`, the field used to construct the target, as well as the target itself and the parcel identifier.
+
+On a deterministic, stratified 20% holdout set, the selected random-forest model reaches approximately 92.4% accuracy, 92.1% balanced accuracy, 0.938 F1, and 0.977 ROC-AUC. The result exceeds the original 90% accuracy objective without directly exposing the build year.
+
+## Data and feature boundary
+
+The analysis downloads the 22,913-row `dwellings_ml.csv` table from the BYU Data Science `data4dwellings` repository. See `DATASET.md` for provenance and redistribution notes.
+
+```{python}
+from src.property_age_model import load_dataset, prepare_features
+
+data = load_dataset()
+X, y = prepare_features(data)
+print(data.shape)
+print(sorted(set(data.columns) - set(X.columns)))
+```
+
+The three excluded columns are:
+
+- `before1980`: the prediction target;
+- `yrbuilt`: direct target leakage;
+- `parcel`: a high-cardinality identifier with no portable explanatory value.
+
+## Modeling choice
+
+A class-balanced random forest provides strong nonlinear performance, works directly with the already encoded numeric table, and exposes impurity-based feature importance for a transparent first-pass explanation. The pipeline uses a fixed seed, stratification, 400 trees, `sqrt` feature sampling, and a minimum leaf size of two.
+
+```{python}
+from src.property_age_model import run_analysis
+
+result = run_analysis(data, output_dir="reports/figures")
+result["metrics"]
+```
+
+## Evaluation
+
+The holdout confusion matrix is reported alongside accuracy, balanced accuracy, F1, and ROC-AUC. Balanced accuracy is included because 62.5% of the records are pre-1980; it gives equal weight to performance on both classes. ROC-AUC evaluates ranking quality across decision thresholds, while F1 summarizes the precision/recall tradeoff for the pre-1980 class.
+
+![Holdout confusion matrix](../reports/figures/confusion-matrix.png)
+
+## Explainability
+
+Architectural style, living area, story count, bathroom count, attached-garage status, and transaction-value fields are among the strongest signals. These importances describe the fitted model, not causal relationships: they should guide inspection rather than claims about why a home is old.
+
+![Top model features](../reports/figures/feature-importance.png)
+
+## Limitations
+
+- The data represents one assessment context and may not generalize to other cities or time periods.
+- Some transaction-value fields can drift with market conditions.
+- Feature importance can be biased toward variables with many possible split points.
+- An external validation set would be required before operational use.
+- The source repository does not declare a dataset license, so this portfolio downloads the data at runtime instead of redistributing it.
+
+## Reproduce
+
+```powershell
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+python -m src.property_age_model --output reports/figures
+```
