@@ -23,6 +23,13 @@ The selected random forest is trained on 80% of 22,913 property records and eval
 
 ![Top feature importances](reports/figures/feature-importance.png)
 
+### Read the evidence
+
+| Data boundary | Holdout behavior |
+| --- | --- |
+| ![Distribution of property build years with the pre-1980 decision boundary](reports/figures/build-year-distribution.png) | ![Confusion matrix for the fixed property-age holdout](reports/figures/confusion-matrix.png) |
+| The target boundary creates two interpretable age groups while the build year itself remains excluded from the model. | The confusion matrix makes both kinds of error visible instead of reducing the evaluation to one headline score. |
+
 Read the [complete case study](analysis/property_age_classifier.qmd), inspect the [generated metrics](reports/figures/metrics.json), or open the [published summary](https://danieltalbert.github.io/data-science-portfolio/).
 
 ## Reproduce
