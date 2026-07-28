@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this case study or its implementation, please cite it as below."
+title: "Data Science Portfolio: Leakage-Aware Property-Age Classification"
+type: software
+authors:
+  - family-names: Talbert
+    given-names: Daniel
+repository-code: "https://github.com/danieltalbert/data-science-portfolio"
+url: "https://danieltalbert.github.io/data-science-portfolio/"
+license: MIT
+version: 1.0.0
+date-released: 2026-07-20
+keywords:
+  - data science
+  - property age classification
+  - leakage-aware evaluation
+  - scikit-learn
+  - reproducible research

@@ -1,0 +1,49 @@
+name: Reproducibility report
+description: Report a problem reproducing a documented command, figure, or result.
+title: "[Reproducibility]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Do not upload private records, credentials,
+        proprietary data, or other sensitive material.
+  - type: textarea
+    id: summary
+    attributes:
+      label: What could not be reproduced?
+      description: Name the README section, command, figure, test, or metric.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, Python version, and installation method.
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and minimal output
+      description: Paste the exact command and the shortest useful error excerpt.
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: input
+    attributes:
+      label: Input source
+      options:
+        - Default upstream download
+        - Existing local CSV
+        - Synthetic test fixture
+        - No data input required
+        - Other or uncertain
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
